@@ -93,7 +93,7 @@ contract presidential {
     }
 
     // everyone can try to change president but requires parliament's approval
-    function changeAdministrator(address newPresident) public {
+    function changePresident(address newPresident) public {
         require(parliament.isPresidentApproved(newPresident) == true);
         president = newPresident;
     }
