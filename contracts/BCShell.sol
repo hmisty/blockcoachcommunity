@@ -13,10 +13,10 @@ contract ParliamentInterface {
      */
     function consumeBudget(uint256 amount) public returns (bool);
     
-    /* check if the specified new admin has been approved by the parliament.
+    /* check if the specified new president has been approved by the parliament.
      * this function should be idempotent.
      */
-    function isNewAdministratorApproved(address newAdministrator) public returns (bool);
+    function isPresidentApproved(address newPresident) public returns (bool);
 }
 
 /**
@@ -68,34 +68,34 @@ library SafeMath {
     }
 }
 
-contract administrated {
-    address public administrator;
+contract presidential {
+    address public president;
     ParliamentInterface public parliament;
 
     constructor() public {
-        administrator = msg.sender;
+        president = msg.sender;
     }
 
-    modifier onlyAdministrator {
-        require(msg.sender == administrator);
+    modifier onlyPresident {
+        require(msg.sender == president);
         _;
     }
 
-    // administrator can assign new parliament
-    function assignParliament(address newParliament) onlyAdministrator public {
+    // president can assign new parliament
+    function assignParliament(address newParliament) onlyPresident public {
         require(newParliament != address(0));
         parliament = ParliamentInterface(newParliament);
     }
     
-    // administrator can dismiss parliament
-    function dismissParliament() onlyAdministrator public {
+    // president can dismiss parliament
+    function dismissParliament() onlyPresident public {
         delete parliament;
     }
 
-    // everyone can try to change administrator but requires parliament's approval
-    function changeAdministrator(address newAdministrator) public {
-        require(parliament.isNewAdministratorApproved(newAdministrator) == true);
-        administrator = newAdministrator;
+    // everyone can try to change president but requires parliament's approval
+    function changeAdministrator(address newPresident) public {
+        require(parliament.isPresidentApproved(newPresident) == true);
+        president = newPresident;
     }
 }
 
@@ -103,7 +103,7 @@ interface tokenRecipient {
     function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external; 
 }
 
-contract BCSToken is administrated {
+contract BCSToken is presidential {
     using SafeMath for uint;
     
     // Public variables of the token
@@ -270,9 +270,9 @@ contract BCSToken is administrated {
      *  @param target the address to receive the minted tokens
      *  @param mintedAmount the amount of tokens it will receive
      * 
-     * onlyAdministrator can initiate the mint, but requires parliament to approve
+     * only presidnet can initiate the mint, but requires parliament to approve the budget
      */
-    function mintToken(address target, uint256 mintedAmount) onlyAdministrator public {
+    function mintToken(address target, uint256 mintedAmount) onlyPresident public {
         require(parliament.hasBudgetApproved(mintedAmount) == true);
         require(parliament.consumeBudget(mintedAmount) == true); //deduct first.
 
