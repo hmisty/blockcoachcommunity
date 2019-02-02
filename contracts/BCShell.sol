@@ -3,20 +3,20 @@ pragma solidity >=0.4.22 <0.6.0;
 /**
  * @title Parliament interface
  */
-contract ParliamentInterface {
+interface ParliamentInterface {
     /* check if there is still enough budget approved by the parliament.
      * this function should be idempotent.
      */
-    function hasBudgetApproved(uint256 amount) public returns (bool);
+    function hasBudgetApproved(uint256 amount) external view returns (bool);
     
     /* consume the approved budget, i.e. deduct the number.
      */
-    function consumeBudget(uint256 amount) public returns (bool);
+    function consumeBudget(uint256 amount) external;
     
     /* check if the specified new president has been approved by the parliament.
      * this function should be idempotent.
      */
-    function isPresidentApproved(address newPresident) public returns (bool);
+    function isPresidentApproved(address newPresident) external view returns (bool);
 }
 
 /**
@@ -274,7 +274,7 @@ contract BCSToken is presidential {
      */
     function mintToken(address target, uint256 mintedAmount) onlyPresident public {
         require(parliament.hasBudgetApproved(mintedAmount) == true);
-        require(parliament.consumeBudget(mintedAmount) == true); //deduct first.
+        parliament.consumeBudget(mintedAmount); //deduct first.
 
         balanceOf[target] = balanceOf[target].add(mintedAmount);
         totalSupply = totalSupply.add(mintedAmount);
