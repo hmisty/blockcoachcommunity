@@ -224,6 +224,7 @@ contract BCParliament is chaired {
         require(newBudgetProposal > 0); // valid proposal exists to vote
         
         address member = msg.sender;
+        require(membership[member] == true);
         require(memberBudgetVoteRound[member] != roundOnBudget); //not yet voted
         memberBudgetVoteRound[member] = roundOnBudget;
         stakeForNewBudgetProposal = stakeForNewBudgetProposal.add(memberstake[member]);
@@ -240,6 +241,7 @@ contract BCParliament is chaired {
         require(newBudgetProposal > 0); // valid proposal exists to vote
         
         address member = msg.sender;
+        require(membership[member] == true);
         require(memberBudgetVoteRound[member] != roundOnBudget); //not yet voted
         memberBudgetVoteRound[member] = roundOnBudget;
         stakeAgainstNewBudgetProposal = stakeAgainstNewBudgetProposal.add(memberstake[member]);
@@ -255,6 +257,7 @@ contract BCParliament is chaired {
         require(newPresidentProposal != address(0)); // valid proposal exists to vote
         
         address member = msg.sender;
+        require(membership[member] == true);
         require(memberPresidentVoteRound[member] != roundOnPresident); //not yet voted
         memberPresidentVoteRound[member] = roundOnPresident;
         stakeForNewPresidentProposal = stakeForNewPresidentProposal.add(memberstake[member]);
@@ -271,6 +274,7 @@ contract BCParliament is chaired {
         require(newPresidentProposal != address(0)); // valid proposal exists to vote
         
         address member = msg.sender;
+        require(membership[member] == true);
         require(memberPresidentVoteRound[member] != roundOnPresident); //not yet voted
         memberPresidentVoteRound[member] = roundOnPresident;
         stakeForNewPresidentProposal = stakeForNewPresidentProposal.add(memberstake[member]);
