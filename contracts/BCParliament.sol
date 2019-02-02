@@ -62,7 +62,7 @@ contract chaired {
         _;
     }
 
-    function changeChairman(address newChairman) public {
+    function changeChairman(address newChairman) onlyChairman public {
         chairman = newChairman;
     }
 }
@@ -124,13 +124,15 @@ contract BCParliament is chaired {
     /* check if there is still enough budget approved by the parliament.
      * this function should be idempotent.
      */
-    function hasBudgetApproved(uint256 amount) public view returns (bool) {
+    function isBudgetApproved(uint256 amount) public view returns (bool) {
         return (budgetApproved >= amount);
     }
     
     /* consume the approved budget, i.e. deduct the number.
+     * CANNOT be internal. how to limit the consumer to token president?
      */
     function consumeBudget(uint256 amount) public {
+        require(msg.sender == address(token));
         require(budgetApproved >= amount);
         budgetApproved = budgetApproved.sub(amount);
     }
@@ -201,10 +203,11 @@ contract BCParliament is chaired {
         clearVoteOnNewPresidentProposal();
     }
     
-    /* parliament member to deposit BCS as stake for voting weights
+    /* parliament member to deposit BCS as stake for voting weights.
+     * MUST call token's approve(parliament address, amount) first,
+     * then call deposit to put stake in.
      */
     function deposit(uint256 amount) public {
-        token.approve(msg.sender, amount);
         token.transferFrom(msg.sender, address(this), amount);
         memberstake[msg.sender] = memberstake[msg.sender].add(amount);
     }
