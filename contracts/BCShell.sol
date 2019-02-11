@@ -1,5 +1,21 @@
 pragma solidity >=0.4.22 <0.6.0;
 
+// ----------------------------------------------------------------------------
+// ERC Token Standard #20 Interface
+// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
+// ----------------------------------------------------------------------------
+contract ERC20Interface {
+    function totalSupply() public view returns (uint);
+    function balanceOf(address tokenOwner) public view returns (uint balance);
+    function allowance(address tokenOwner, address spender) public view returns (uint remaining);
+    function transfer(address to, uint tokens) public returns (bool success);
+    function approve(address spender, uint tokens) public returns (bool success);
+    function transferFrom(address from, address to, uint tokens) public returns (bool success);
+
+    event Transfer(address indexed from, address indexed to, uint tokens);
+    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
+}
+
 /**
  * @title Congress interface
  */
@@ -75,7 +91,11 @@ library SafeMath {
 
 contract owned {
     address public owner;
+    address public newOwner;
     CongressInterface public congress;
+
+    event OwnershipTransferred(address indexed _from, address indexed _to);
+    event CongressUpgraded(address indexed _from, address indexed _to);
 
     constructor() public {
         owner = msg.sender;
@@ -92,13 +112,22 @@ contract owned {
             require(congress.isCongressApproved(newCongress) == true, "congress approval required");
         }
 
+        emit CongressUpgraded(address(congress), newCongress);
         congress = CongressInterface(newCongress);
     }
 
     // anyone can try to change president but requires congress's approval
-    function changeOwner(address newOwner) public {
-        require(congress.isOwnerApproved(newOwner) == true, "congress approval required");
+    function changeOwner(address _newOwner) public {
+        require(congress.isOwnerApproved(_newOwner) == true, "congress approval required");
+        newOwner = _newOwner;
+    }
+    
+    // double confirm
+    function acceptOwnership() public {
+        require(msg.sender == newOwner, "only approved owner can accept");
+        emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
+        newOwner = address(0);
     }
 }
 
@@ -295,5 +324,20 @@ contract BCSToken is owned {
         emit Transfer(address(0), address(this), mintedAmount);
         emit Transfer(address(this), address(target), mintedAmount);
     }
+    
+    // ------------------------------------------------------------------------
+    // Don't accept ETH
+    // ------------------------------------------------------------------------
+    function () external payable {
+        revert();
+    }
 
+    // ------------------------------------------------------------------------
+    // Owner can transfer out any accidentally sent ERC20 tokens
+    // ------------------------------------------------------------------------
+    function transferAnyERC20Token(address tokenAddress, uint tokens) onlyOwner public returns (bool success) {
+        return ERC20Interface(tokenAddress).transfer(owner, tokens);
+    }
+    
+    
 }
