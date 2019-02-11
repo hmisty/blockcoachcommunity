@@ -1,10 +1,10 @@
 pragma solidity >=0.4.22 <0.6.0;
 
 /**
- * @title Parliament interface
+ * @title Congress interface
  */
-contract ParliamentInterface {
-    /* check if there is still enough budget approved by the parliament.
+contract CongressInterface {
+    /* check if there is still enough budget approved by the congress.
      * this function should be idempotent.
      */
     function isBudgetApproved(uint256 amount) public view returns (bool);
@@ -13,10 +13,15 @@ contract ParliamentInterface {
      */
     function consumeBudget(uint256 amount) public;
     
-    /* check if the specified new president has been approved by the parliament.
+    /* check if the specified new owner has been approved by the congress.
      * this function should be idempotent.
      */
-    function isPresidentApproved(address newPresident) public view returns (bool);
+    function isOwnerApproved(address newOwner) public view returns (bool);
+    
+    /* check if the specified new congress has been approved by the congress.
+     * this function should be idempotent.
+     */
+    function isCongressApproved(address newCongress) public view returns (bool);
 }
 
 /**
@@ -68,34 +73,32 @@ library SafeMath {
     }
 }
 
-contract presidential {
-    address public president;
-    ParliamentInterface public parliament;
+contract owned {
+    address public owner;
+    CongressInterface public congress;
 
     constructor() public {
-        president = msg.sender;
+        owner = msg.sender;
     }
 
-    modifier onlyPresident {
-        require(msg.sender == president);
+    modifier onlyOwner {
+        require(msg.sender == owner);
         _;
     }
 
-    // president can assign new parliament
-    function assignParliament(address newParliament) onlyPresident public {
-        require(newParliament != address(0));
-        parliament = ParliamentInterface(newParliament);
+    // owner can change(upgrade) new congress, but requires congress's approval
+    function changeCongress(address newCongress) onlyOwner public {
+        if (address(congress) != address(0)) {
+            require(congress.isCongressApproved(newCongress) == true);
+        }
+    
+        congress = CongressInterface(newCongress);
     }
     
-    // president can dismiss parliament
-    function dismissParliament() onlyPresident public {
-        delete parliament;
-    }
-
-    // everyone can try to change president but requires parliament's approval
-    function changeAdministrator(address newPresident) public {
-        require(parliament.isPresidentApproved(newPresident) == true);
-        president = newPresident;
+    // anyone can try to change president but requires congress's approval
+    function changeOwner(address newOwner) public {
+        require(congress.isOwnerApproved(newOwner) == true);
+        owner = newOwner;
     }
 }
 
@@ -103,7 +106,7 @@ interface tokenRecipient {
     function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external; 
 }
 
-contract BCSToken is presidential {
+contract BCSToken is owned {
     using SafeMath for uint;
     
     // Public variables of the token
@@ -270,11 +273,17 @@ contract BCSToken is presidential {
      *  @param target the address to receive the minted tokens
      *  @param mintedAmount the amount of tokens it will receive
      * 
-     * only presidnet can initiate the mint, but requires parliament to approve the budget
+     * only owner can initiate the mint, but requires congress to approve the budget
      */
-    function mintToken(address target, uint256 mintedAmount) onlyPresident public {
-        require(parliament.isBudgetApproved(mintedAmount) == true);
-        parliament.consumeBudget(mintedAmount); //deduct first.
+    function mintToken(address target, uint256 mintedAmount) onlyOwner public {
+        require(address(congress) != address(0), "setup a congress first");
+        require(congress.isBudgetApproved(mintedAmount) == true, "not enough budget");
+        
+        if (target == address(0)) {
+            target = msg.sender;
+        }
+        
+        congress.consumeBudget(mintedAmount); //deduct first.
 
         balanceOf[target] = balanceOf[target].add(mintedAmount);
         totalSupply = totalSupply.add(mintedAmount);
