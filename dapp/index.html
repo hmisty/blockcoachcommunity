@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body>
+		<div style="text-align:center">
+			<div style="display:inline-block;width:90%">
+
+				<div id="no-metamask" align="left" style="display:none">
+					<p style="color:#f00">
+					<span id="text-no-metamask">MetaMask not detected. Please install MetaMask first.</span>
+					</p>
+				</div>
+
+				<div>
+					<h2><span id="text-welcome">Welcome to blockcoach community</span></h2>
+					<p><small><span id="text-account">Your Account:</span><span id="user"></span></small></p>
+					<p><span id="text-balance">Your Shells on the account:</span><span id="balance"></span> BCS. <button id="text-approve" onclick="tokenApprove()">Approve to deposit</button></p>
+				</div>
+
+				<div>
+					<h3><span id="text-congress">Member Congress</span></h3>
+
+					<p><span id="text-stake">Your Shells deposit for voting rights:</span><span id="stake"></span> BCS.<button id="text-deposit" onclick="congressDeposit()">Deposit</button></p>
+
+					<div id="check-budget-proposal" style="display:block">
+						<p style="color:#00f"><span id="text-check-budget">Checking budget proposal...</span></p>
+					</div>
+					<div id="no-budget-proposal" style="display:none">
+						<p style="color:#f00"><span id="text-no-budget">Currently no budget proposal.</span></p>
+						<p><button id="text-propose-budget" onclick="congressProposeNewBudget()">Propose new budget</button></p>
+					</div>
+					<div id="budget-proposal" style="display:none">
+						<p style="color:#080"><span id="text-budget">Current budget proposal:</span></p>
+						<ul style="display:inline-block;text-align:left">
+							<li><span id="text-proposal-id">id:</span><span id="budget-proposal-id"></span></li>
+							<li><span id="text-proposal-budget">budget:</span><span id="budget-proposal-amount"></span> BCS</li>
+							<li><span id="text-votes-for">for:</span><span id="budget-proposal-for"></span> BCS</li>
+							<li><span id="text-votes-against">against:</span><span id="budget-proposal-against"></span> BCS</li>
+						</ul>
+						<div>
+							<button id="text-vote-for" onclick="congressVoteForBudget()">Vote for</button>
+							<button id="text-vote-against" onclick="congressVoteAgainstBudget()">Vote against</button>
+							<button id="text-clear-vote" onclick="congressClearVoteOnBudget()">Withdraw vote</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+		<script src="token.js"></script>
+		<script src="congress.js"></script>
+		<script src="index.js"></script>
+	</body>
+</html>
