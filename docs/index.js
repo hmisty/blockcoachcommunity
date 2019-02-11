@@ -104,6 +104,18 @@ window.addEventListener('load', function() {
 			$$("stake", bcs);
 		});
 
+		// get and show total stake in congress
+		congress.checkTotalStake((e, r) => {
+			var bcs = r.toNumber() / Math.pow(10, 18);
+			$$("total-stake", bcs);
+		});
+
+		// get and show approved budget in congress
+		congress.budgetApproved((e, r) => {
+			var bcs = r.toNumber() / Math.pow(10, 18);
+			$$("approved-budget", bcs);
+		});
+
 		// get and show current budget proposal
 		congress.budgetProposal((err, res) => {
 			if (res[1] > 0) {
@@ -132,11 +144,12 @@ const i18n = {
 		"text-no-metamask": "未检测到MetaMask。请先安装MetaMask。",
 		"text-welcome": "欢迎来到教链社群",
 		"text-account": "您的账户：",
-		"text-balance": "您账户上的贝壳(BCS)：",
+		"text-balance": "您账户上的贝壳数量：",
 		"text-congress": "会员代表大会",
-		"text-stake": "您质押于投票权的贝壳(BCS)：",
+		"text-stake": "您质押于投票权的贝壳数量：",
 		"text-check-budget": "检查预算提案情况...",
 		"text-no-budget": "当前无预算提案",
+		"text-on-budget": "预算",
 		"text-budget": "当前预算提案：",
 		"text-propose-budget": "提交预算提案",
 		"text-approve": "质押预授权",
@@ -148,6 +161,8 @@ const i18n = {
 		"text-vote-for": "赞成",
 		"text-vote-against": "反对",
 		"text-clear-vote": "撤回投票",
+		"text-total-stake": "总质押贝壳数量：",
+		"text-approved-budget": "已批准的可用预算：",
 	}
 };
 
