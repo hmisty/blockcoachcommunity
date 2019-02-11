@@ -4,7 +4,7 @@ blockcoach community
 ## 去中心化自治组织
 DAO, decentralized autonomous organization
 
-**本社区治理的去中心化通过区块链实现Contract(智能合约) + Community Owner(群主) + Member Congress(议会)分立制约：社长可以解散议会，议会可以弹劾和改选社长；社长可以增发贝壳，但是只能在议会未解散且批准预算范围内。*
+**本社区治理的去中心化通过区块链实现Contract(智能合约) + Community Owner(群主) + Member Congress(议会)分立制约：群主可以解散议会，议会可以弹劾和改选群主；群主可以增发贝壳，但是只能在议会未解散且批准预算范围内。*
 
 以上治理结构使用以太坊智能合约定义如下：
 
