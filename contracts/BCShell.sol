@@ -1,3 +1,10 @@
+/**
+ * Main contract (Token contract) for Blockcoach Community
+ * 
+ * Author: Evan Liu (evan@blockcoach.com)
+ * Release version: 0.2.0
+ * Last revision date: 2019-02-11
+ */
 pragma solidity >=0.4.22 <0.6.0;
 
 // ----------------------------------------------------------------------------
