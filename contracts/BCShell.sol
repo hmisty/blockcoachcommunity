@@ -118,6 +118,7 @@ contract owned {
 
     // anyone can try to change president but requires congress's approval
     function changeOwner(address _newOwner) public {
+        require(address(congress) != address(0), "non-empty congress required");
         require(congress.isOwnerApproved(_newOwner) == true, "congress approval required");
         newOwner = _newOwner;
     }
