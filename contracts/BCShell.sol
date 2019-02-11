@@ -8,16 +8,16 @@ contract CongressInterface {
      * this function should be idempotent.
      */
     function isBudgetApproved(uint256 amount) public view returns (bool);
-    
+
     /* consume the approved budget, i.e. deduct the number.
      */
     function consumeBudget(uint256 amount) public;
-    
+
     /* check if the specified new owner has been approved by the congress.
      * this function should be idempotent.
      */
     function isOwnerApproved(address newOwner) public view returns (bool);
-    
+
     /* check if the specified new congress has been approved by the congress.
      * this function should be idempotent.
      */
@@ -82,64 +82,69 @@ contract owned {
     }
 
     modifier onlyOwner {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "only owner can do it");
         _;
     }
 
     // owner can change(upgrade) new congress, but requires congress's approval
     function changeCongress(address newCongress) onlyOwner public {
         if (address(congress) != address(0)) {
-            require(congress.isCongressApproved(newCongress) == true);
+            require(congress.isCongressApproved(newCongress) == true, "congress approval required");
         }
-    
+
         congress = CongressInterface(newCongress);
     }
-    
+
     // anyone can try to change president but requires congress's approval
     function changeOwner(address newOwner) public {
-        require(congress.isOwnerApproved(newOwner) == true);
+        require(congress.isOwnerApproved(newOwner) == true, "congress approval required");
         owner = newOwner;
     }
 }
 
-interface tokenRecipient { 
-    function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external; 
+interface tokenRecipient {
+    function receiveApproval(address _from, uint256 _value, address _token, bytes calldata _extraData) external;
 }
 
 contract BCSToken is owned {
     using SafeMath for uint;
-    
+
     // Public variables of the token
     string public name = "Blockcoach Community Shell";
     string public symbol = "BCS";
     uint8 public decimals = 18;
     uint public totalSupply = 0; // Starting from ZERO.
-    
+
     // This creates an array with all balances
     mapping (address => uint256) public balanceOf;
     mapping (address => mapping (address => uint256)) public allowance;
 
     // This generates a public event on the blockchain that will notify clients
     event Transfer(address indexed from, address indexed to, uint256 value);
-    
+
     // This generates a public event on the blockchain that will notify clients
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 
     // This notifies clients about the amount burnt
     event Burn(address indexed from, uint256 value);
 
-    constructor() public {}
-    
+    constructor() public {
+        // initialize 1 tokens for cold start
+        totalSupply = 1 * 10 ** uint(decimals);
+        balanceOf[msg.sender] = totalSupply;
+        emit Transfer(address(0), msg.sender, totalSupply);
+    }
+
     /**
      * Internal transfer, only can be called by this contract
      */
     function _transfer(address _from, address _to, uint _value) internal {
         // Prevent transfer to 0x0 address. Use burn() instead
-        require(_to != address(0x0));
+        require(_to != address(0x0), "no receiver");
         // Check if the sender has enough
-        require(balanceOf[_from] >= _value);
+        require(balanceOf[_from] >= _value, "not enough funds");
         // Check for overflows
-        require(balanceOf[_to].add(_value) >= balanceOf[_to]);
+        require(balanceOf[_to].add(_value) >= balanceOf[_to], "receiver overflows");
         // Save this for an assertion in the future
         uint previousBalances = balanceOf[_from].add(balanceOf[_to]);
         // Subtract from the sender
@@ -168,16 +173,16 @@ contract BCSToken is owned {
      * Transfer tokens to multiple receivers.
      */
     function multiTransfer(address[] memory destinations, uint[] memory tokens) public returns (bool success) {
-        assert(destinations.length > 0);
-        assert(destinations.length < 128);
-        assert(destinations.length == tokens.length);
+        require(destinations.length > 0, "no receiver");
+        require(destinations.length < 128, "too many receivers");
+        require(destinations.length == tokens.length, "receivers<=>amount not match");
         uint8 i = 0;
         uint totalTokensToTransfer = 0;
         for (i = 0; i < destinations.length; i++){
-            assert(tokens[i] > 0);
+            require(tokens[i] > 0, "cannot send 0 amount");
             totalTokensToTransfer = totalTokensToTransfer.add(tokens[i]);
         }
-        assert (balanceOf[msg.sender] > totalTokensToTransfer);
+        require(balanceOf[msg.sender] > totalTokensToTransfer, "not enough funds");
         balanceOf[msg.sender] = balanceOf[msg.sender].sub(totalTokensToTransfer);
         for (i = 0; i < destinations.length; i++){
             balanceOf[destinations[i]] = balanceOf[destinations[i]].add(tokens[i]);
@@ -185,7 +190,7 @@ contract BCSToken is owned {
         }
         return true;
     }
-    
+
     /**
      * Transfer tokens from other address
      *
@@ -196,7 +201,7 @@ contract BCSToken is owned {
      * @param _value the amount to send
      */
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(_value <= allowance[_from][msg.sender]);     // Check allowance
+        require(_value <= allowance[_from][msg.sender], "not enough funds approved");     // Check allowance
         allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
         _transfer(_from, _to, _value);
         return true;
@@ -244,7 +249,7 @@ contract BCSToken is owned {
      * @param _value the amount of money to burn
      */
     function burn(uint256 _value) public returns (bool success) {
-        require(balanceOf[msg.sender] >= _value);   // Check if the sender has enough
+        require(balanceOf[msg.sender] >= _value, "not enough funds");   // Check if the sender has enough
         balanceOf[msg.sender] = balanceOf[msg.sender].sub(_value);            // Subtract from the sender
         totalSupply = totalSupply.sub(_value);                      // Updates totalSupply
         emit Burn(msg.sender, _value);
@@ -260,29 +265,29 @@ contract BCSToken is owned {
      * @param _value the amount of money to burn
      */
     function burnFrom(address _from, uint256 _value) public returns (bool success) {
-        require(balanceOf[_from] >= _value);                // Check if the targeted balance is enough
-        require(_value <= allowance[_from][msg.sender]);    // Check allowance
+        require(balanceOf[_from] >= _value, "not enough funds");                // Check if the targeted balance is enough
+        require(_value <= allowance[_from][msg.sender], "not enough funds approved");    // Check allowance
         balanceOf[_from] = balanceOf[_from].sub(_value);                         // Subtract from the targeted balance
         allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);             // Subtract from the sender's allowance
         totalSupply = totalSupply.sub(_value);                              // Update totalSupply
         emit Burn(_from, _value);
         return true;
     }
-    
+
     /** @notice Create `mintedAmount` tokens and send it to `target`
      *  @param target the address to receive the minted tokens
      *  @param mintedAmount the amount of tokens it will receive
-     * 
+     *
      * only owner can initiate the mint, but requires congress to approve the budget
      */
     function mintToken(address target, uint256 mintedAmount) onlyOwner public {
         require(address(congress) != address(0), "setup a congress first");
         require(congress.isBudgetApproved(mintedAmount) == true, "not enough budget");
-        
+
         if (target == address(0)) {
             target = msg.sender;
         }
-        
+
         congress.consumeBudget(mintedAmount); //deduct first.
 
         balanceOf[target] = balanceOf[target].add(mintedAmount);
@@ -290,5 +295,5 @@ contract BCSToken is owned {
         emit Transfer(address(0), address(this), mintedAmount);
         emit Transfer(address(this), address(target), mintedAmount);
     }
-    
+
 }
