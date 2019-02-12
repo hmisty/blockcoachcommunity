@@ -17,17 +17,27 @@
 				<img src="icon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
 				<span name="text-community-dapp">Blockcoach Community DApp</span>
 			</a>
-			<!--button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
-			</button-->
+			</button>
 
-			<div class="collapse navbar-collapse" id="navbarNavDropdown">
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active">
 						<a class="nav-link" href="#">Congress <span class="sr-only">(current)</span></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">Owner</a>
+						<a class="nav-link disabled" href="#">Owner</a>
+					</li>
+				</ul>
+
+				<ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+					<li class="nav-item dropdown">
+						<a id="language" class="nav-item nav-link dropdown-toggle mr-md-2" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">English</a>
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="language">
+							<a class="dropdown-item" href="?lang=en">English</a>
+							<a class="dropdown-item" href="?lang=zh">中文</a>
+						</div>
 					</li>
 				</ul>
 
@@ -43,6 +53,9 @@
 			<!-- Check MetaMask -->
 			<div id="no-metamask" class="alert alert-danger" style="display:none;">
 				<span name="text-no-metamask">MetaMask not detected. Please install MetaMask first.</span>
+			</div>
+			<div id="metamask-nologin" class="alert alert-warning" style="display:none;">
+				<span name="text-metamask-nologin">MetaMask not logged in. Please login MetaMask first.</span>
 			</div>
 			<!-- End of Check MetaMask -->
 
@@ -99,7 +112,7 @@
 								<div>
 									<button name="text-vote-for" class="btn btn-outline-success" onclick="congressVoteForBudget()">Vote for</button>
 									<button name="text-vote-against" class="btn btn-outline-danger" onclick="congressVoteAgainstBudget()">Vote against</button>
-									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnBudget()">Withdraw vote</button>
+									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnBudget()">Revoke vote</button>
 								</div>
 							</div>
 
@@ -137,7 +150,7 @@
 								<div>
 									<button name="text-vote-for" class="btn btn-outline-success" onclick="congressVoteForOwner()">Vote for</button>
 									<button name="text-vote-against" class="btn btn-outline-danger" onclick="congressVoteAgainstOwner()">Vote against</button>
-									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnOwner()">Withdraw vote</button>
+									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnOwner()">Revoke vote</button>
 								</div>
 							</div>
 
@@ -175,7 +188,7 @@
 								<div>
 									<button name="text-vote-for" class="btn btn-outline-success" onclick="congressVoteForCongress()">Vote for</button>
 									<button name="text-vote-against" class="btn btn-outline-danger" onclick="congressVoteAgainstCongress()">Vote against</button>
-									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnCongress()">Withdraw vote</button>
+									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnCongress()">Revoke vote</button>
 								</div>
 							</div>
 
