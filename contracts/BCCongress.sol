@@ -2,7 +2,8 @@
  * Congress contract for Blockcoach Community Shell
  * 
  * Author: Evan Liu (evan@blockcoach.com)
- * Release version: 0.2.0
+ * Release version: 0.2.1
+ *  => working with BCShell release version: 0.2.0
  * Last revision date: 2019-02-11
  */
  pragma solidity >=0.4.22 <0.6.0;
@@ -226,9 +227,10 @@ contract BCCongress {
         address m = msg.sender;
         require(amount <= members[m].stake, "not enough funds deposited");
         
-        require(members[m].budgetProposal.id == 0, "cannot withdraw while voting on budget proposal");
-        require(members[m].ownerProposal.id == 0, "cannot withdraw while voting on owner proposal");
-        require(members[m].congressProposal.id == 0, "cannot withdraw while voting on congress proposal");
+        // BUGFIX 0.2.1: should also check if proposal is valid.
+        require(budgetProposal.newBudget == 0 || members[m].budgetProposal.id == 0, "cannot withdraw while voting on budget proposal");
+        require(ownerProposal.newOwner == address(0) || members[m].ownerProposal.id == 0, "cannot withdraw while voting on owner proposal");
+        require(congressProposal.newCongress == address(0) || members[m].congressProposal.id == 0, "cannot withdraw while voting on congress proposal");
         
         members[m].stake = members[m].stake.sub(amount);
         token.transfer(m, amount);
