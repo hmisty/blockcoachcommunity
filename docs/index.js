@@ -1,13 +1,17 @@
-function $(id) {
+function $i(id) {
 	return document.getElementById(id);
 }
 
-function $$(id) {
+function $n(id) {
 	return document.getElementsByName(id);
 }
 
 function $t(id, text) {
 	document.getElementById(id).innerText = text;
+}
+
+function mask_address(address) {
+		return address.slice(0, 6) + "..." + address.slice(-4);
 }
 
 var account;
@@ -36,7 +40,7 @@ var congressClearVoteOnCongress; //function
 
 window.addEventListener('load', function() {
 	if (typeof web3 == "undefined") {
-		$("no-metamask").style.display = "block";
+		$i("no-metamask").style.display = "block";
 	} else {
 		console.log("web3 is ready");
 
@@ -45,7 +49,9 @@ window.addEventListener('load', function() {
 
 		// show current user account
 		account = web3.eth.defaultAccount;
-		$t("user", account);
+		var address_masked = mask_address(account);
+		$t("user-masked", address_masked);
+		$t("user", address_masked);
 
 		// get and show current account balance
 		token.balanceOf(account, (e, r) => {
@@ -120,13 +126,13 @@ window.addEventListener('load', function() {
 				$t("budget-proposal-amount", res[1] / Math.pow(10, decimals));
 				$t("budget-proposal-for", res[2] / Math.pow(10, decimals));
 				$t("budget-proposal-against", res[3] / Math.pow(10, decimals));
-				$("check-budget-proposal").style.display = "none";
-				$("budget-proposal").style.display = "block";
-				$("no-budget-proposal").style.display = "none";
+				$i("check-budget-proposal").style.display = "none";
+				$i("budget-proposal").style.display = "block";
+				$i("no-budget-proposal").style.display = "none";
 			} else {
-				$("check-budget-proposal").style.display = "none";
-				$("no-budget-proposal").style.display = "block";
-				$("budget-proposal").style.display = "none";
+				$i("check-budget-proposal").style.display = "none";
+				$i("no-budget-proposal").style.display = "block";
+				$i("budget-proposal").style.display = "none";
 			}
 		});
 		
@@ -170,23 +176,27 @@ window.addEventListener('load', function() {
 
 		// get and show approved owner in congress
 		congress.ownerApproved((e, r) => {
-			$t("approved-owner", r);
+			var addr = r;
+			var masked = mask_address(addr);
+			$t("approved-owner", masked);
 		});
 
 		// get and show current owner proposal
 		congress.ownerProposal((e, r) => {
 			if (r[1] != "0x0000000000000000000000000000000000000000") {
 				$t("owner-proposal-id", r[0]);
-				$t("owner-proposal-address", r[1]);
+				var addr = r[1];
+				var masked_addr = mask_address(addr);
+				$t("owner-proposal-address", masked_addr);
 				$t("owner-proposal-for", r[2]);
 				$t("owner-proposal-against", r[3]);
-				$("check-owner-proposal").style.display = "none";
-				$("owner-proposal").style.display = "block";
-				$("no-owner-proposal").style.display = "none";
+				$i("check-owner-proposal").style.display = "none";
+				$i("owner-proposal").style.display = "block";
+				$i("no-owner-proposal").style.display = "none";
 			} else {
-				$("check-owner-proposal").style.display = "none";
-				$("no-owner-proposal").style.display = "block";
-				$("owner-proposal").style.display = "none";
+				$i("check-owner-proposal").style.display = "none";
+				$i("no-owner-proposal").style.display = "block";
+				$i("owner-proposal").style.display = "none";
 			}
 		});
 
@@ -230,23 +240,23 @@ window.addEventListener('load', function() {
 
 		// get and show approved congress in congress
 		congress.congressApproved((e, r) => {
-			$t("approved-congress", r);
+			$t("approved-congress", mask_address(r));
 		});
 
 		// get and show current congress proposal
 		congress.congressProposal((e, r) => {
 			if (r[1] != "0x0000000000000000000000000000000000000000") {
 				$t("congress-proposal-id", r[0]);
-				$t("congress-proposal-address", r[1]);
+				$t("congress-proposal-address", mask_address(r[1]));
 				$t("congress-proposal-for", r[2]);
 				$t("congress-proposal-against", r[3]);
-				$("check-congress-proposal").style.display = "none";
-				$("congress-proposal").style.display = "block";
-				$("no-congress-proposal").style.display = "none";
+				$i("check-congress-proposal").style.display = "none";
+				$i("congress-proposal").style.display = "block";
+				$i("no-congress-proposal").style.display = "none";
 			} else {
-				$("check-congress-proposal").style.display = "none";
-				$("no-congress-proposal").style.display = "block";
-				$("congress-proposal").style.display = "none";
+				$i("check-congress-proposal").style.display = "none";
+				$i("no-congress-proposal").style.display = "block";
+				$i("congress-proposal").style.display = "none";
 			}
 		});
 
@@ -295,11 +305,13 @@ window.addEventListener('load', function() {
 const i18n = {
 	"zh": {
 		"text-no-metamask": "未检测到MetaMask。请先安装MetaMask。",
-		"text-welcome": "欢迎来到教链社群",
-		"text-account": "您的账户：",
-		"text-balance": "您账户上的贝壳数量：",
+		"text-welcome": "欢迎",
+		"text-account": "当前账户：",
+		"text-account-no-colon": "当前账户",
+		"text-account-address": "账户地址：",
+		"text-balance": "账户余额(贝壳)：",
 		"text-member-congress": "会员代表大会",
-		"text-stake": "您质押于投票权的贝壳数量：",
+		"text-stake": "你的投票权(质押贝壳)：",
 		"text-check-budget": "检查预算提案情况...",
 		"text-no-budget": "当前无预算提案",
 		"text-on-budget": "预算",
@@ -327,7 +339,7 @@ const i18n = {
 		"text-vote-for": "赞成",
 		"text-vote-against": "反对",
 		"text-clear-vote": "撤回投票",
-		"text-total-stake": "总质押贝壳数量：",
+		"text-total-stake": "总投票权(质押贝壳)：",
 		"text-approved-budget": "已批准的可用预算：",
 		"text-approved-owner": "已批准的新群主：",
 		"text-approved-congress": "已批准的新议会：",
@@ -337,7 +349,7 @@ const i18n = {
 // translate when Chinese is supported
 if (navigator.languages.indexOf("zh") > -1) {
 	for (name in i18n["zh"]) {
-		$$(name).forEach((n) => { n.innerText = i18n["zh"][name] });
+		$n(name).forEach((n) => { n.innerText = i18n["zh"][name] });
 	}
 }
 

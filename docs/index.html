@@ -1,123 +1,208 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
+		<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA" crossorigin="anonymous">
+
+    <title>Blockcoach Community dApp</title>
 	</head>
+
 	<body>
-		<div style="text-align:center">
-			<div style="display:inline-block;width:90%">
+		<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="#">
+				<img src="icon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+				<span name="text-community-dapp">Blockcoach Community DApp</span>
+			</a>
+			<!--button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button-->
 
-				<div id="no-metamask" align="left" style="display:none">
-					<p style="color:#f00">
-					<span name="text-no-metamask">MetaMask not detected. Please install MetaMask first.</span>
-					</p>
+			<div class="collapse navbar-collapse" id="navbarNavDropdown">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Congress <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Owner</a>
+					</li>
+				</ul>
+
+				<div class="navbar-text">
+					<span name="text-account">Current Account:</span><span id="user-masked"></span>
 				</div>
 
-				<div>
-					<h2><span name="text-welcome">Welcome to blockcoach community</span></h2>
-					<p><small><span name="text-account">Your Account:</span><span id="user"></span></small></p>
-					<p><span name="text-balance">Your Shells on the account:</span><span id="balance"></span> BCS. <button name="text-approve" onclick="tokenApprove()">Approve to deposit</button></p>
-				</div>
+		</nav>
 
-				<div>
-					<h2><span name="text-member-congress">Member Congress</span></h2>
+		<div class="container-fluid">
+			<h1></h1>
 
-					<p><span name="text-stake">Your Shells deposit for voting rights:</span><span id="stake"></span> BCS.<button name="text-deposit" onclick="congressDeposit()">Deposit</button>
-					<button name="text-withdraw" onclick="congressWithdraw()">Withdraw</button></p>
-
-					<p><span name="text-total-stake">Total Shells deposit:</span><span id="total-stake"></span> BCS.</p>
-
-					<h3><span name="text-on-budget">On Budget</span></h3>
-
-					<p><span name="text-approved-budget">Approved budget:</span><span id="approved-budget"></span> BCS.</p>
-
-					<div id="check-budget-proposal" style="display:block">
-						<p style="color:#00f"><span name="text-check-budget">Checking budget proposal...</span></p>
-					</div>
-					<div id="no-budget-proposal" style="display:none">
-						<p style="color:#f00"><span name="text-no-budget">Currently no budget proposal.</span></p>
-						<p><button name="text-propose-budget" onclick="congressProposeNewBudget()">Propose new budget</button></p>
-					</div>
-					<div id="budget-proposal" style="display:none">
-						<p style="color:#080"><span name="text-budget">Current budget proposal:</span></p>
-						<ul style="display:inline-block;text-align:left">
-							<li><span name="text-proposal-id">id:</span><span id="budget-proposal-id"></span></li>
-							<li><span name="text-proposal-budget">budget:</span><span id="budget-proposal-amount"></span> BCS</li>
-							<li><span name="text-votes-for">for:</span><span id="budget-proposal-for"></span> BCS</li>
-							<li><span name="text-votes-against">against:</span><span id="budget-proposal-against"></span> BCS</li>
-						</ul>
-						<div>
-							<button name="text-vote-for" onclick="congressVoteForBudget()">Vote for</button>
-							<button name="text-vote-against" onclick="congressVoteAgainstBudget()">Vote against</button>
-							<button name="text-clear-vote" onclick="congressClearVoteOnBudget()">Withdraw vote</button>
-						</div>
-					</div>
-
-
-					<h3><span name="text-on-owner">On Owner</span></h3>
-
-					<p><span name="text-approved-owner">Approved owner:</span><span id="approved-owner"></span>.</p>
-
-					<div id="check-owner-proposal" style="display:block">
-						<p style="color:#00f"><span name="text-check-owner">Checking owner proposal...</span></p>
-					</div>
-					<div id="no-owner-proposal" style="display:none">
-						<p style="color:#f00"><span name="text-no-owner">Currently no owner proposal.</span></p>
-						<p><button name="text-propose-owner" onclick="congressProposeNewOwner()">Propose new owner</button></p>
-					</div>
-					<div id="owner-proposal" style="display:none">
-						<p style="color:#080"><span name="text-owner">Current owner proposal:</span></p>
-						<ul style="display:inline-block;text-align:left">
-							<li><span name="text-proposal-id">id:</span><span id="owner-proposal-id"></span></li>
-							<li><span name="text-proposal-owner">owner:</span><span id="owner-proposal-address"></span></li>
-							<li><span name="text-votes-for">for:</span><span id="owner-proposal-for"></span> BCS</li>
-							<li><span name="text-votes-against">against:</span><span id="owner-proposal-against"></span> BCS</li>
-						</ul>
-						<div>
-							<button name="text-vote-for" onclick="congressVoteForOwner()">Vote for</button>
-							<button name="text-vote-against" onclick="congressVoteAgainstOwner()">Vote against</button>
-							<button name="text-clear-vote" onclick="congressClearVoteOnOwner()">Withdraw vote</button>
-						</div>
-					</div>
-
-
-
-					<h3><span name="text-on-congress">On Congress</span></h3>
-
-					<p><span name="text-approved-congress">Approved congress:</span><span id="approved-congress"></span>.</p>
-
-					<div id="check-congress-proposal" style="display:block">
-						<p style="color:#00f"><span name="text-check-congress">Checking congress proposal...</span></p>
-					</div>
-					<div id="no-congress-proposal" style="display:none">
-						<p style="color:#f00"><span name="text-no-congress">Currently no congress proposal.</span></p>
-						<p><button name="text-propose-congress" onclick="congressProposeNewCongress()">Propose new congress</button></p>
-					</div>
-					<div id="congress-proposal" style="display:none">
-						<p style="color:#080"><span name="text-congress">Current congress proposal:</span></p>
-						<ul style="display:inline-block;text-align:left">
-							<li><span name="text-proposal-id">id:</span><span id="congress-proposal-id"></span></li>
-							<li><span name="text-proposal-congress">congress:</span><span id="congress-proposal-address"></span></li>
-							<li><span name="text-votes-for">for:</span><span id="congress-proposal-for"></span> BCS</li>
-							<li><span name="text-votes-against">against:</span><span id="congress-proposal-against"></span> BCS</li>
-						</ul>
-						<div>
-							<button name="text-vote-for" onclick="congressVoteForCongress()">Vote for</button>
-							<button name="text-vote-against" onclick="congressVoteAgainstCongress()">Vote against</button>
-							<button name="text-clear-vote" onclick="congressClearVoteOnCongress()">Withdraw vote</button>
-						</div>
-					</div>
-
-
-
-
-
-				</div>
+			<!-- Check MetaMask -->
+			<div id="no-metamask" class="alert alert-danger" style="display:none;">
+				<span name="text-no-metamask">MetaMask not detected. Please install MetaMask first.</span>
 			</div>
+			<!-- End of Check MetaMask -->
 
-		</div>
+			<div class="row align-iterms-center">
+				<div class="col-sm-3">
+					<!-- ############## current account info ############## -->
+					<div class="card mb-3">
+						<img src="voter.jpg" class="card-img-top" alt="member-selfie">
+						<h5 class="card-header"><span name="text-account-no-colon">Current Account:</span><span id="user-masked"></span></h5>
+						<div class="card-body">
+							<p class="card-text"><small class="text-muted"><span name="text-account-address">Account Address:</span></span><span id="user"></span></small></p>
+							<p class="card-text"><span name="text-balance">Account Balance:</span><span id="balance"></span> BCS</p>
+							<p><button name="text-approve" class="btn btn-outline-warning" onclick="tokenApprove()">Approve to deposit</button></p>
+
+							<hr>
+
+							<p class="card-text"><span name="text-stake">Your voting rights (deposited Shells):</span><span id="stake"></span> BCS</p>
+							<p><button name="text-deposit" class="btn btn-outline-primary" onclick="congressDeposit()">Deposit</button>
+							<button name="text-withdraw" class="btn btn-outline-secondary" onclick="congressWithdraw()">Withdraw</button></p>
+
+							<p class="card-text"><small class="text-muted"><span name="text-total-stake">Total voting rights (deposited Shells):</span><span id="total-stake"></span> BCS</small></p>
+
+						</div>
+					</div>
+				</div>
+
+
+				<div class="col-sm-3">
+					<!-- ############## budget proposal ############## -->
+					<div class="card mb-3">
+						<img src="budget.jpg" class="card-img-top" alt="member-selfie">
+						<h5 class="card-header"><span name="text-on-budget">On Budget</span></h5>
+						<div class="card-body">
+							<p><small class="text-muted"><span name="text-approved-budget">Approved budget:</span><span id="approved-budget"></span> BCS</small></p>
+
+							<hr>
+
+							<div id="check-budget-proposal" style="display:block">
+								<p style="color:#00f"><span name="text-check-budget">Checking budget proposal...</span></p>
+							</div>
+							<div id="no-budget-proposal" style="display:none">
+								<p style="color:#f00"><span name="text-no-budget">Currently no budget proposal.</span></p>
+								<p><button name="text-propose-budget" class="btn btn-outline-primary" onclick="congressProposeNewBudget()">Propose new budget</button></p>
+							</div>
+							<div id="budget-proposal" style="display:none">
+								<ul class="list-group">
+									<li class="list-group-item list-group-item-primary"><span name="text-budget">Current budget proposal:</span></li>
+									<li class="list-group-item"><span name="text-proposal-id">id:</span><span id="budget-proposal-id"></span></li>
+									<li class="list-group-item"><span name="text-proposal-budget">budget:</span><span id="budget-proposal-amount"></span> BCS</li>
+									<li class="list-group-item"><span name="text-votes-for">for:</span><span id="budget-proposal-for"></span> BCS</li>
+									<li class="list-group-item"><span name="text-votes-against">against:</span><span id="budget-proposal-against"></span> BCS</li>
+								</ul>
+								<p></p>
+								<div>
+									<button name="text-vote-for" class="btn btn-outline-success" onclick="congressVoteForBudget()">Vote for</button>
+									<button name="text-vote-against" class="btn btn-outline-danger" onclick="congressVoteAgainstBudget()">Vote against</button>
+									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnBudget()">Withdraw vote</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+
+				<div class="col-sm-3">
+					<!-- ############## owner proposal ############## -->
+					<div class="card mb-3">
+						<img src="owner.jpg" class="card-img-top" alt="member-selfie">
+						<h5 class="card-header"><span name="text-on-owner">On Owner</span></h5>
+						<div class="card-body">
+							<p><small class="text-muted"><span name="text-approved-owner">Approved owner:</span><span id="approved-owner"></span></small></p>
+
+							<hr>
+
+							<div id="check-owner-proposal" style="display:block">
+								<p style="color:#00f"><span name="text-check-owner">Checking owner proposal...</span></p>
+							</div>
+							<div id="no-owner-proposal" style="display:none">
+								<p style="color:#f00"><span name="text-no-owner">Currently no owner proposal.</span></p>
+								<p><button name="text-propose-owner" class="btn btn-outline-primary" onclick="congressProposeNewOwner()">Propose new owner</button></p>
+							</div>
+							<div id="owner-proposal" style="display:none">
+								<ul class="list-group">
+									<li class="list-group-item list-group-item-danger"><span name="text-owner">Current owner proposal:</span></li>
+									<li class="list-group-item"><span name="text-proposal-id">id:</span><span id="owner-proposal-id"></span></li>
+									<li class="list-group-item"><span name="text-proposal-owner">owner:</span><span id="owner-proposal-address"></span></li>
+									<li class="list-group-item"><span name="text-votes-for">for:</span><span id="owner-proposal-for"></span> BCS</li>
+									<li class="list-group-item"><span name="text-votes-against">against:</span><span id="owner-proposal-against"></span> BCS</li>
+								</ul>
+								<p></p>
+								<div>
+									<button name="text-vote-for" class="btn btn-outline-success" onclick="congressVoteForOwner()">Vote for</button>
+									<button name="text-vote-against" class="btn btn-outline-danger" onclick="congressVoteAgainstOwner()">Vote against</button>
+									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnOwner()">Withdraw vote</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+
+				<div class="col-sm-3">
+					<!-- ############## congress proposal ############## -->
+					<div class="card mb-3">
+						<img src="congress.jpg" class="card-img-top" alt="member-selfie">
+						<h5 class="card-header"><span name="text-on-congress">On Congress</span></h5>
+						<div class="card-body">
+							<p class="card-text"><small class="muted-text"><span name="text-approved-congress">Approved congress:</span><span id="approved-congress"></span></small></p>
+
+							<hr>
+
+							<div id="check-congress-proposal" style="display:block">
+								<p style="color:#00f"><span name="text-check-congress">Checking congress proposal...</span></p>
+							</div>
+							<div id="no-congress-proposal" style="display:none">
+								<p style="color:#f00"><span name="text-no-congress">Currently no congress proposal.</span></p>
+								<p><button name="text-propose-congress" class="btn btn-outline-primary" onclick="congressProposeNewCongress()">Propose new congress</button></p>
+							</div>
+							<div id="congress-proposal" style="display:none">
+								<ul class="list-group">
+									<li class="list-group-item list-group-item-warning"><span name="text-congress">Current congress proposal:</span></li>
+									<li class="list-group-item"><span name="text-proposal-id">id:</span><span id="congress-proposal-id"></span></li>
+									<li class="list-group-item"><span name="text-proposal-congress">congress:</span><span id="congress-proposal-address"></span></li>
+									<li class="list-group-item"><span name="text-votes-for">for:</span><span id="congress-proposal-for"></span> BCS</li>
+									<li class="list-group-item"><span name="text-votes-against">against:</span><span id="congress-proposal-against"></span> BCS</li>
+								</ul>
+								<p></p>
+								<div>
+									<button name="text-vote-for" class="btn btn-outline-success" onclick="congressVoteForCongress()">Vote for</button>
+									<button name="text-vote-against" class="btn btn-outline-danger" onclick="congressVoteAgainstCongress()">Vote against</button>
+									<button name="text-clear-vote" class="btn btn-outline-secondary" onclick="congressClearVoteOnCongress()">Withdraw vote</button>
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+
+
+			</div><!-- END of row -->
+
+
+			<div class="text-center">
+				<small class="text-muted">technology support: blockcoach.com</small>
+			</div> 
+
+		</div><!-- END of container -->
+
 
 		<script src="token.js"></script>
 		<script src="congress.js"></script>
 		<script src="index.js"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/js/bootstrap.min.js" integrity="sha384-7aThvCh9TypR7fIc2HV4O/nFMVCBwyIUKL8XCtKE+8xgCgl/PQGuFsvShjr74PBp" crossorigin="anonymous"></script>
+
 	</body>
 </html>
