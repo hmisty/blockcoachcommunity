@@ -2,7 +2,11 @@ function $(id) {
 	return document.getElementById(id);
 }
 
-function $$(id, text) {
+function $$(id) {
+	return document.getElementsByName(id);
+}
+
+function $t(id, text) {
 	document.getElementById(id).innerText = text;
 }
 
@@ -14,10 +18,21 @@ var congress;
 var tokenApprove; //function
 var congressDeposit; //function
 var congressWithdraw; //function
+
 var congressProposeNewBudget; //function
 var congressVoteForBudget; //function
 var congressVoteAgainstBudget; //function
 var congressClearVoteOnBudget; //function
+
+var congressProposeNewOwner; //function
+var congressVoteForOwner; //function
+var congressVoteAgainstOwner; //function
+var congressClearVoteOnOwner; //function
+
+var congressProposeNewCongress; //function
+var congressVoteForCongress; //function
+var congressVoteAgainstCongress; //function
+var congressClearVoteOnCongress; //function
 
 window.addEventListener('load', function() {
 	if (typeof web3 == "undefined") {
@@ -30,12 +45,12 @@ window.addEventListener('load', function() {
 
 		// show current user account
 		account = web3.eth.defaultAccount;
-		$$("user", account);
+		$t("user", account);
 
 		// get and show current account balance
 		token.balanceOf(account, (e, r) => {
 			var totalBCS = r.toNumber() / Math.pow(10, 18);
-			$$("balance", totalBCS);
+			$t("balance", totalBCS);
 
 			//define function tokenApprove
 			tokenApprove = function() {
@@ -64,6 +79,57 @@ window.addEventListener('load', function() {
 
 		});
 
+		// get and show stake in congress
+		congress.checkMemberStake(account, (e, r) => {
+			var stakeAmount = r.toNumber();
+			var stakeBCS = stakeAmount / Math.pow(10, 18);
+			$t("stake", stakeBCS);
+			
+			congressWithdraw = function() {
+				var bcs = prompt("取回多少贝壳(BCS)？How many BCS to withdraw?", stakeBCS);
+				if (bcs > 0) {
+					var amount = bcs * Math.pow(10, decimals);
+					congress.withdraw(amount, (e, r) => {
+						console.log("withdraw " + amount + " shell amount returns (e,r):");
+						console.log(e);
+						console.log(r);
+					});
+				}
+			};
+
+		});
+
+		// get and show total stake in congress
+		congress.checkTotalStake((e, r) => {
+			var bcs = r.toNumber() / Math.pow(10, 18);
+			$t("total-stake", bcs);
+		});
+
+		/* --------------- on budget proposal ------------------- */
+
+		// get and show approved budget in congress
+		congress.budgetApproved((e, r) => {
+			var bcs = r.toNumber() / Math.pow(10, 18);
+			$t("approved-budget", bcs);
+		});
+
+		// get and show current budget proposal
+		congress.budgetProposal((err, res) => {
+			if (res[1] > 0) {
+				$t("budget-proposal-id", res[0]);
+				$t("budget-proposal-amount", res[1] / Math.pow(10, decimals));
+				$t("budget-proposal-for", res[2] / Math.pow(10, decimals));
+				$t("budget-proposal-against", res[3] / Math.pow(10, decimals));
+				$("check-budget-proposal").style.display = "none";
+				$("budget-proposal").style.display = "block";
+				$("no-budget-proposal").style.display = "none";
+			} else {
+				$("check-budget-proposal").style.display = "none";
+				$("no-budget-proposal").style.display = "block";
+				$("budget-proposal").style.display = "none";
+			}
+		});
+		
 		congressProposeNewBudget = function() {
 			var bcs = prompt("提案新增多少贝壳(BCS)的预算？How many new BCS to propose?", 0);
 			if (bcs > 0) {
@@ -100,56 +166,127 @@ window.addEventListener('load', function() {
 			});
 		};
 
-		// get and show stake in congress
-		congress.checkMemberStake(account, (e, r) => {
-			var stakeAmount = r.toNumber();
-			var stakeBCS = stakeAmount / Math.pow(10, 18);
-			$$("stake", stakeBCS);
-			
-			congressWithdraw = function() {
-				var bcs = prompt("取回多少贝壳(BCS)？How many BCS to withdraw?", stakeBCS);
-				if (bcs > 0) {
-					var amount = bcs * Math.pow(10, decimals);
-					congress.withdraw(amount, (e, r) => {
-						console.log("withdraw " + amount + " shell amount returns (e,r):");
-						console.log(e);
-						console.log(r);
-					});
-				}
-			};
+		/* --------------- on owner proposal ------------------- */
 
+		// get and show approved owner in congress
+		congress.ownerApproved((e, r) => {
+			$t("approved-owner", r);
 		});
 
-		// get and show total stake in congress
-		congress.checkTotalStake((e, r) => {
-			var bcs = r.toNumber() / Math.pow(10, 18);
-			$$("total-stake", bcs);
-		});
-
-		// get and show approved budget in congress
-		congress.budgetApproved((e, r) => {
-			var bcs = r.toNumber() / Math.pow(10, 18);
-			$$("approved-budget", bcs);
-		});
-
-		// get and show current budget proposal
-		congress.budgetProposal((err, res) => {
-			if (res[1] > 0) {
-				$$("budget-proposal-id", res[0]);
-				$$("budget-proposal-amount", res[1] / Math.pow(10, decimals));
-				$$("budget-proposal-for", res[2] / Math.pow(10, decimals));
-				$$("budget-proposal-against", res[3] / Math.pow(10, decimals));
-				$("check-budget-proposal").style.display = "none";
-				$("budget-proposal").style.display = "block";
-				$("no-budget-proposal").style.display = "none";
+		// get and show current owner proposal
+		congress.ownerProposal((e, r) => {
+			if (r[1] != "0x0000000000000000000000000000000000000000") {
+				$t("owner-proposal-id", r[0]);
+				$t("owner-proposal-address", r[1]);
+				$t("owner-proposal-for", r[2]);
+				$t("owner-proposal-against", r[3]);
+				$("check-owner-proposal").style.display = "none";
+				$("owner-proposal").style.display = "block";
+				$("no-owner-proposal").style.display = "none";
 			} else {
-				$("check-budget-proposal").style.display = "none";
-				$("no-budget-proposal").style.display = "block";
-				$("budget-proposal").style.display = "none";
+				$("check-owner-proposal").style.display = "none";
+				$("no-owner-proposal").style.display = "block";
+				$("owner-proposal").style.display = "none";
 			}
 		});
-		
 
+		congressProposeNewOwner = function() {
+			var address = prompt("提案新群主的地址？Address of new Owner to propose?", "");
+			console.log("new owner address input: " + address);
+			if (address > 0) {
+				congress.proposeNewOwner(address, (e, r) => {
+					console.log("approve new owner " + address + " returns (e,r):");
+					console.log(e);
+					console.log(r);
+				});
+			}
+		};
+
+		congressVoteForOwner = function() {
+			congress.voteForNewOwner((e, r) => {
+					console.log("vote for owner proposal returns (e,r):");
+					console.log(e);
+					console.log(r);
+			});
+		};
+
+		congressVoteAgainstOwner = function() {
+			congress.voteAgainstNewOwner((e, r) => {
+					console.log("vote against owner proposal returns (e,r):");
+					console.log(e);
+					console.log(r);
+			});
+		};
+
+		congressClearVoteOnOwner = function() {
+			congress.clearVoteOnNewOwner((e, r) => {
+					console.log("clear vote on owner proposal returns (e,r):");
+					console.log(e);
+					console.log(r);
+			});
+		};
+
+		/* --------------- on congress proposal ------------------- */
+
+		// get and show approved congress in congress
+		congress.congressApproved((e, r) => {
+			$t("approved-congress", r);
+		});
+
+		// get and show current congress proposal
+		congress.congressProposal((e, r) => {
+			if (r[1] != "0x0000000000000000000000000000000000000000") {
+				$t("congress-proposal-id", r[0]);
+				$t("congress-proposal-address", r[1]);
+				$t("congress-proposal-for", r[2]);
+				$t("congress-proposal-against", r[3]);
+				$("check-congress-proposal").style.display = "none";
+				$("congress-proposal").style.display = "block";
+				$("no-congress-proposal").style.display = "none";
+			} else {
+				$("check-congress-proposal").style.display = "none";
+				$("no-congress-proposal").style.display = "block";
+				$("congress-proposal").style.display = "none";
+			}
+		});
+
+		congressProposeNewCongress = function() {
+			var address = prompt("提案新议会的地址？Address of new Congress to propose?", "");
+			console.log("new congress address input: " + address);
+			if (address > 0) {
+				congress.proposeNewCongress(address, (e, r) => {
+					console.log("approve new congress " + address + " returns (e,r):");
+					console.log(e);
+					console.log(r);
+				});
+			}
+		};
+
+		congressVoteForCongress = function() {
+			congress.voteForNewCongress((e, r) => {
+					console.log("vote for congress proposal returns (e,r):");
+					console.log(e);
+					console.log(r);
+			});
+		};
+
+		congressVoteAgainstCongress = function() {
+			congress.voteAgainstNewCongress((e, r) => {
+					console.log("vote against congress proposal returns (e,r):");
+					console.log(e);
+					console.log(r);
+			});
+		};
+
+		congressClearVoteOnCongress = function() {
+			congress.clearVoteOnNewCongress((e, r) => {
+					console.log("clear vote on congress proposal returns (e,r):");
+					console.log(e);
+					console.log(r);
+			});
+		};
+
+		/* ------------------- end ------------------------- */
 	}
 
 });
@@ -161,18 +298,30 @@ const i18n = {
 		"text-welcome": "欢迎来到教链社群",
 		"text-account": "您的账户：",
 		"text-balance": "您账户上的贝壳数量：",
-		"text-congress": "会员代表大会",
+		"text-member-congress": "会员代表大会",
 		"text-stake": "您质押于投票权的贝壳数量：",
 		"text-check-budget": "检查预算提案情况...",
 		"text-no-budget": "当前无预算提案",
 		"text-on-budget": "预算",
 		"text-budget": "当前预算提案：",
 		"text-propose-budget": "提交预算提案",
+		"text-check-owner": "检查新群主提案情况...",
+		"text-no-owner": "当前无新群主提案",
+		"text-on-owner": "群主",
+		"text-owner": "当前新群主提案：",
+		"text-propose-owner": "提交新群主提案",
+		"text-check-congress": "检查新议会提案情况...",
+		"text-no-congress": "当前无新议会提案",
+		"text-on-congress": "议会",
+		"text-congress": "当前新议会提案：",
+		"text-propose-congress": "提交新议会提案",
 		"text-approve": "质押预授权",
 		"text-deposit": "质押贝壳",
 		"text-withdraw": "取回贝壳",
 		"text-proposal-id": "提案号：",
 		"text-proposal-budget": "预算贝壳数量：",
+		"text-proposal-owner": "新群主：",
+		"text-proposal-congress": "新议会：",
 		"text-votes-for": "赞成票数：",
 		"text-votes-against": "反对票数：",
 		"text-vote-for": "赞成",
@@ -180,13 +329,15 @@ const i18n = {
 		"text-clear-vote": "撤回投票",
 		"text-total-stake": "总质押贝壳数量：",
 		"text-approved-budget": "已批准的可用预算：",
+		"text-approved-owner": "已批准的新群主：",
+		"text-approved-congress": "已批准的新议会：",
 	}
 };
 
 // translate when Chinese is supported
 if (navigator.languages.indexOf("zh") > -1) {
-	for (id in i18n["zh"]) {
-		$(id).innerText = i18n["zh"][id];
+	for (name in i18n["zh"]) {
+		$$(name).forEach((n) => { n.innerText = i18n["zh"][name] });
 	}
 }
 

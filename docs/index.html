@@ -8,49 +8,108 @@
 
 				<div id="no-metamask" align="left" style="display:none">
 					<p style="color:#f00">
-					<span id="text-no-metamask">MetaMask not detected. Please install MetaMask first.</span>
+					<span name="text-no-metamask">MetaMask not detected. Please install MetaMask first.</span>
 					</p>
 				</div>
 
 				<div>
-					<h2><span id="text-welcome">Welcome to blockcoach community</span></h2>
-					<p><small><span id="text-account">Your Account:</span><span id="user"></span></small></p>
-					<p><span id="text-balance">Your Shells on the account:</span><span id="balance"></span> BCS. <button id="text-approve" onclick="tokenApprove()">Approve to deposit</button></p>
+					<h2><span name="text-welcome">Welcome to blockcoach community</span></h2>
+					<p><small><span name="text-account">Your Account:</span><span id="user"></span></small></p>
+					<p><span name="text-balance">Your Shells on the account:</span><span id="balance"></span> BCS. <button name="text-approve" onclick="tokenApprove()">Approve to deposit</button></p>
 				</div>
 
 				<div>
-					<h2><span id="text-congress">Member Congress</span></h2>
+					<h2><span name="text-member-congress">Member Congress</span></h2>
 
-					<p><span id="text-stake">Your Shells deposit for voting rights:</span><span id="stake"></span> BCS.<button id="text-deposit" onclick="congressDeposit()">Deposit</button>
-					<button id="text-withdraw" onclick="congressWithdraw()">Withdraw</button></p>
+					<p><span name="text-stake">Your Shells deposit for voting rights:</span><span id="stake"></span> BCS.<button name="text-deposit" onclick="congressDeposit()">Deposit</button>
+					<button name="text-withdraw" onclick="congressWithdraw()">Withdraw</button></p>
 
-					<p><span id="text-total-stake">Total Shells deposit:</span><span id="total-stake"></span> BCS.</p>
+					<p><span name="text-total-stake">Total Shells deposit:</span><span id="total-stake"></span> BCS.</p>
 
-					<h3><span id="text-on-budget">On Budget</span></h3>
+					<h3><span name="text-on-budget">On Budget</span></h3>
 
-					<p><span id="text-approved-budget">Approved budget:</span><span id="approved-budget"></span> BCS.</p>
+					<p><span name="text-approved-budget">Approved budget:</span><span id="approved-budget"></span> BCS.</p>
 
 					<div id="check-budget-proposal" style="display:block">
-						<p style="color:#00f"><span id="text-check-budget">Checking budget proposal...</span></p>
+						<p style="color:#00f"><span name="text-check-budget">Checking budget proposal...</span></p>
 					</div>
 					<div id="no-budget-proposal" style="display:none">
-						<p style="color:#f00"><span id="text-no-budget">Currently no budget proposal.</span></p>
-						<p><button id="text-propose-budget" onclick="congressProposeNewBudget()">Propose new budget</button></p>
+						<p style="color:#f00"><span name="text-no-budget">Currently no budget proposal.</span></p>
+						<p><button name="text-propose-budget" onclick="congressProposeNewBudget()">Propose new budget</button></p>
 					</div>
 					<div id="budget-proposal" style="display:none">
-						<p style="color:#080"><span id="text-budget">Current budget proposal:</span></p>
+						<p style="color:#080"><span name="text-budget">Current budget proposal:</span></p>
 						<ul style="display:inline-block;text-align:left">
-							<li><span id="text-proposal-id">id:</span><span id="budget-proposal-id"></span></li>
-							<li><span id="text-proposal-budget">budget:</span><span id="budget-proposal-amount"></span> BCS</li>
-							<li><span id="text-votes-for">for:</span><span id="budget-proposal-for"></span> BCS</li>
-							<li><span id="text-votes-against">against:</span><span id="budget-proposal-against"></span> BCS</li>
+							<li><span name="text-proposal-id">id:</span><span id="budget-proposal-id"></span></li>
+							<li><span name="text-proposal-budget">budget:</span><span id="budget-proposal-amount"></span> BCS</li>
+							<li><span name="text-votes-for">for:</span><span id="budget-proposal-for"></span> BCS</li>
+							<li><span name="text-votes-against">against:</span><span id="budget-proposal-against"></span> BCS</li>
 						</ul>
 						<div>
-							<button id="text-vote-for" onclick="congressVoteForBudget()">Vote for</button>
-							<button id="text-vote-against" onclick="congressVoteAgainstBudget()">Vote against</button>
-							<button id="text-clear-vote" onclick="congressClearVoteOnBudget()">Withdraw vote</button>
+							<button name="text-vote-for" onclick="congressVoteForBudget()">Vote for</button>
+							<button name="text-vote-against" onclick="congressVoteAgainstBudget()">Vote against</button>
+							<button name="text-clear-vote" onclick="congressClearVoteOnBudget()">Withdraw vote</button>
 						</div>
 					</div>
+
+
+					<h3><span name="text-on-owner">On Owner</span></h3>
+
+					<p><span name="text-approved-owner">Approved owner:</span><span id="approved-owner"></span>.</p>
+
+					<div id="check-owner-proposal" style="display:block">
+						<p style="color:#00f"><span name="text-check-owner">Checking owner proposal...</span></p>
+					</div>
+					<div id="no-owner-proposal" style="display:none">
+						<p style="color:#f00"><span name="text-no-owner">Currently no owner proposal.</span></p>
+						<p><button name="text-propose-owner" onclick="congressProposeNewOwner()">Propose new owner</button></p>
+					</div>
+					<div id="owner-proposal" style="display:none">
+						<p style="color:#080"><span name="text-owner">Current owner proposal:</span></p>
+						<ul style="display:inline-block;text-align:left">
+							<li><span name="text-proposal-id">id:</span><span id="owner-proposal-id"></span></li>
+							<li><span name="text-proposal-owner">owner:</span><span id="owner-proposal-address"></span></li>
+							<li><span name="text-votes-for">for:</span><span id="owner-proposal-for"></span> BCS</li>
+							<li><span name="text-votes-against">against:</span><span id="owner-proposal-against"></span> BCS</li>
+						</ul>
+						<div>
+							<button name="text-vote-for" onclick="congressVoteForOwner()">Vote for</button>
+							<button name="text-vote-against" onclick="congressVoteAgainstOwner()">Vote against</button>
+							<button name="text-clear-vote" onclick="congressClearVoteOnOwner()">Withdraw vote</button>
+						</div>
+					</div>
+
+
+
+					<h3><span name="text-on-congress">On Congress</span></h3>
+
+					<p><span name="text-approved-congress">Approved congress:</span><span id="approved-congress"></span>.</p>
+
+					<div id="check-congress-proposal" style="display:block">
+						<p style="color:#00f"><span name="text-check-congress">Checking congress proposal...</span></p>
+					</div>
+					<div id="no-congress-proposal" style="display:none">
+						<p style="color:#f00"><span name="text-no-congress">Currently no congress proposal.</span></p>
+						<p><button name="text-propose-congress" onclick="congressProposeNewCongress()">Propose new congress</button></p>
+					</div>
+					<div id="congress-proposal" style="display:none">
+						<p style="color:#080"><span name="text-congress">Current congress proposal:</span></p>
+						<ul style="display:inline-block;text-align:left">
+							<li><span name="text-proposal-id">id:</span><span id="congress-proposal-id"></span></li>
+							<li><span name="text-proposal-congress">congress:</span><span id="congress-proposal-address"></span></li>
+							<li><span name="text-votes-for">for:</span><span id="congress-proposal-for"></span> BCS</li>
+							<li><span name="text-votes-against">against:</span><span id="congress-proposal-against"></span> BCS</li>
+						</ul>
+						<div>
+							<button name="text-vote-for" onclick="congressVoteForCongress()">Vote for</button>
+							<button name="text-vote-against" onclick="congressVoteAgainstCongress()">Vote against</button>
+							<button name="text-clear-vote" onclick="congressClearVoteOnCongress()">Withdraw vote</button>
+						</div>
+					</div>
+
+
+
+
 
 				</div>
 			</div>
