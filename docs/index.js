@@ -13,6 +13,7 @@ var congress;
 
 var tokenApprove; //function
 var congressDeposit; //function
+var congressWithdraw; //function
 var congressProposeNewBudget; //function
 var congressVoteForBudget; //function
 var congressVoteAgainstBudget; //function
@@ -33,34 +34,35 @@ window.addEventListener('load', function() {
 
 		// get and show current account balance
 		token.balanceOf(account, (e, r) => {
-			var bcs = r.toNumber() / Math.pow(10, 18);
-			$$("balance", bcs);
+			var totalBCS = r.toNumber() / Math.pow(10, 18);
+			$$("balance", totalBCS);
+
+			//define function tokenApprove
+			tokenApprove = function() {
+				var bcs = prompt("预授权多少贝壳(BCS)质押？How many BCS to approve?", totalBCS);
+				if (bcs > 0) {
+					var amount = bcs * Math.pow(10, decimals);
+					token.approve(congress.address, amount, (e, r) => {
+						console.log("approve " + amount + " shell amount returns (e,r):");
+						console.log(e);
+						console.log(r);
+					});
+				}
+			};
+
+			congressDeposit = function() {
+				var bcs = prompt("质押多少贝壳(BCS)？How many BCS to deposit?", totalBCS);
+				if (bcs > 0) {
+					var amount = bcs * Math.pow(10, decimals);
+					congress.deposit(amount, (e, r) => {
+						console.log("deposit " + amount + " shell amount returns (e,r):");
+						console.log(e);
+						console.log(r);
+					});
+				}
+			};
+
 		});
-
-		//define function tokenApprove
-		tokenApprove = function() {
-			var bcs = prompt("预授权质押多少贝壳(BCS)？How many BCS to approve?", 0);
-			if (bcs > 0) {
-				var amount = bcs * Math.pow(10, decimals);
-				token.approve(congress.address, amount, (e, r) => {
-					console.log("approve " + amount + " shell amount returns (e,r):");
-					console.log(e);
-					console.log(r);
-				});
-			}
-		};
-
-		congressDeposit = function() {
-			var bcs = prompt("质押多少贝壳(BCS)？How many BCS to deposit?", 0);
-			if (bcs > 0) {
-				var amount = bcs * Math.pow(10, decimals);
-				congress.deposit(amount, (e, r) => {
-					console.log("deposit " + amount + " shell amount returns (e,r):");
-					console.log(e);
-					console.log(r);
-				});
-			}
-		};
 
 		congressProposeNewBudget = function() {
 			var bcs = prompt("提案新增多少贝壳(BCS)的预算？How many new BCS to propose?", 0);
@@ -100,8 +102,22 @@ window.addEventListener('load', function() {
 
 		// get and show stake in congress
 		congress.checkMemberStake(account, (e, r) => {
-			var bcs = r.toNumber() / Math.pow(10, 18);
-			$$("stake", bcs);
+			var stakeAmount = r.toNumber();
+			var stakeBCS = stakeAmount / Math.pow(10, 18);
+			$$("stake", stakeBCS);
+			
+			congressWithdraw = function() {
+				var bcs = prompt("取回多少贝壳(BCS)？How many BCS to withdraw?", stakeBCS);
+				if (bcs > 0) {
+					var amount = bcs * Math.pow(10, decimals);
+					congress.withdraw(amount, (e, r) => {
+						console.log("withdraw " + amount + " shell amount returns (e,r):");
+						console.log(e);
+						console.log(r);
+					});
+				}
+			};
+
 		});
 
 		// get and show total stake in congress
@@ -154,6 +170,7 @@ const i18n = {
 		"text-propose-budget": "提交预算提案",
 		"text-approve": "质押预授权",
 		"text-deposit": "质押贝壳",
+		"text-withdraw": "取回贝壳",
 		"text-proposal-id": "提案号：",
 		"text-proposal-budget": "预算贝壳数量：",
 		"text-votes-for": "赞成票数：",
