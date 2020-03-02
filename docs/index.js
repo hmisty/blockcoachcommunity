@@ -34,10 +34,14 @@ function mask_address(address) {
 	}
 }
 
+/////////////////////////////////////////////////////////////
 var account;
 const decimals = 18; //hard coded for less func calls
 var token;
 var congress;
+
+var connectMetaMask; //async function
+var onload; //function
 
 var tokenApprove; //function
 var congressDeposit; //function
@@ -58,17 +62,45 @@ var congressVoteForCongress; //function
 var congressVoteAgainstCongress; //function
 var congressClearVoteOnCongress; //function
 
-window.addEventListener('load', function() {
-	if (typeof web3 == "undefined") {
+connectMetaMask = async function () {
+	// Modern dapp browsers...
+	if (window.ethereum) {
+		window.web3 = new Web3(ethereum);
+		try {
+			// Request account access if needed
+			await ethereum.enable();
+			// Acccounts now exposed
+			console.log("web3 is now ready.");
+			// Refresh the page.
+			window.location.reload(); //This works.
+		} catch (error) {
+			// User denied account access...
+			window.alert("Failed to connect to MetaMask. 无法连接到MetaMask.");
+		}
+	}
+	// Legacy dapp browsers...
+	else if (window.web3) {
+		window.web3 = new Web3(web3.currentProvider);
+		// Acccounts always exposed
+		console.log("web3 is already there.");
+	}
+	// Non-dapp browsers...
+	else {
+		console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+		window.alert("No MetaMask detected. 请先安装MetaMask.");
+	}
+
+}
+
+onload = function () {
+	if (typeof window.web3 == "undefined" 
+		&& typeof window.ethereum == "undefined") {
 		// metamask not found
 		$i("no-metamask").style.display = "block";
 		return;
+	} else {
+		console.log("metamask detected.");
 	}
-
-	console.log("web3 is ready");
-
-	token = getTokenContract();
-	congress = getCongressContract();
 
 	// show current user account
 	account = web3.eth.defaultAccount;
@@ -77,11 +109,19 @@ window.addEventListener('load', function() {
 		// metamask not logged in
 		$i("metamask-nologin").style.display = "block";
 		return;
+	} else if (account == null) {
+		// metamask not connected
+		$i("metamask-notconnected").style.display = "block";
+		return;
 	}
 
 	var address_masked = mask_address(account);
 	$t("user-masked", address_masked);
 	$t("user", address_masked);
+
+	// load contracts
+	token = getTokenContract();
+	congress = getCongressContract();
 
 	// get and show current account balance
 	token.balanceOf(account, (e, r) => {
@@ -328,13 +368,18 @@ window.addEventListener('load', function() {
 
 	/* ------------------- end ------------------------- */
 
-});
+}
 
+window.addEventListener('load', onload);
+
+/////////////////////////////////////////////////////////////
 // beggar implementation of i18n
 const i18n = {
 	"zh": {
 		"text-no-metamask": "未检测到MetaMask。请先安装MetaMask。",
 		"text-metamask-nologin": "MetaMask未登入。请先登入MetaMask。",
+		"text-metamask-notconnected": "MetaMask未连接。请先连接MetaMask。",
+		"text-connect-metamask": "连接到MetaMask",
 		"text-welcome": "欢迎",
 		"text-account": "当前账户：",
 		"text-account-no-colon": "当前账户",

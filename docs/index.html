@@ -4,6 +4,8 @@
 		<!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- no favicon.ico -->
+		<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA" crossorigin="anonymous">
@@ -56,6 +58,10 @@
 			</div>
 			<div id="metamask-nologin" class="alert alert-warning" style="display:none;">
 				<span name="text-metamask-nologin">MetaMask not logged in. Please login MetaMask first.</span>
+			</div>
+			<div id="metamask-notconnected" class="alert alert-warning" style="display:none;">
+				<span name="text-metamask-notconnected">MetaMask not connected. Please connect MetaMask first.</span>
+				<button name="text-connect-metamask" class="btn btn-outline-danger" onclick="connectMetaMask()">Connect to MetaMask</button>
 			</div>
 			<!-- End of Check MetaMask -->
 
@@ -202,7 +208,9 @@
 
 
 			<div class="text-center">
-				<small class="text-muted">technology support: blockcoach.com</small>
+				<small class="text-muted">token contract: <a href="https://ropsten.etherscan.io/token/0x90e80f7b22cb70f95a01fdded77239583e19f033">ropsten 0x90e80f7b22cb70f95a01fdded77239583e19f033</a></small>
+				<br>
+				<small class="text-muted">(c)2019 blockcoach</small>
 			</div> 
 
 		</div><!-- END of container -->
